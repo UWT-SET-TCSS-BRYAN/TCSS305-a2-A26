@@ -6,7 +6,10 @@ package edu.uw.tcss.view;
 
 import edu.uw.tcss.io.FileLoader;
 import edu.uw.tcss.logic.PropertyChangeEnabledRoadRageControls;
+import edu.uw.tcss.model.CollisionComparators;
+import edu.uw.tcss.model.CollisionComparators.CollisionMode;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -14,10 +17,13 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serial;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
@@ -188,10 +194,41 @@ public final class RoadRageGUI extends JFrame implements ActionListener {
         northPanel.add(makeButton(STEP_COMMAND));
         northPanel.add(makeButton(RESET_COMMAND));
 
+        // Collision mode selector - uses factory to get available modes
+        final var collisionModes = CollisionComparators.getAll();
+        final JComboBox<CollisionMode> collisionCombo = new JComboBox<>();
+        collisionModes.forEach(collisionCombo::addItem);
+
+        // Custom renderer uses displayName() instead of toString()
+        collisionCombo.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(final JList<?> list,
+                                                          final Object value,
+                                                          final int index,
+                                                          final boolean isSelected,
+                                                          final boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof CollisionMode mode) {
+                    setText(mode.displayName());
+                }
+                return this;
+            }
+        });
+
+        // Selection handler extracts comparator from the mode
+        collisionCombo.addActionListener(e -> {
+            final CollisionMode selected = (CollisionMode) collisionCombo.getSelectedItem();
+            if (selected != null) {
+                myRoadRage.setCollisionComparator(selected.comparator());
+            }
+        });
+
         final Container southPanel = new JPanel(new FlowLayout());
         southPanel.add(new JLabel("FPS: "));
         southPanel.add(mySlider);
         southPanel.add(box);
+        southPanel.add(new JLabel("Collision Mode: "));
+        southPanel.add(collisionCombo);
 
         final Container masterPanel = new JPanel(new BorderLayout());
         masterPanel.add(panel, BorderLayout.CENTER);

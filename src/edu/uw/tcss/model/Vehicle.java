@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * An interface for objects that can move in four directions.
- * 
+ *
  * @author Marty Stepp
  * @author Daniel M. Zimmerman
  * @author Alan Fowler (acfowler@u.washington.edu)
@@ -37,19 +37,26 @@ public interface Vehicle {
     Direction chooseDirection(Map<Direction, Terrain> theNeighbors);
 
     /**
-     * Called when this Vehicle collides with the specified other Vehicle.
-     * 
-     * @param theOther The other object.
+     * Called when this Vehicle loses a collision.
+     * Marks this vehicle as dead.
      */
-    void collide(Vehicle theOther);
+    void collide();
 
     /**
      * Returns the number of updates between this vehicle's death and when it
      * should be revived.
-     * 
+     *
      * @return the number of updates.
      */
     int getDeathTime();
+
+    /**
+     * Returns the mass of this vehicle. Heavier vehicles survive collisions
+     * with lighter vehicles.
+     *
+     * @return the mass of this vehicle.
+     */
+    int getMass();
 
     /**
      * Returns the file name of the image for this Vehicle object, such as

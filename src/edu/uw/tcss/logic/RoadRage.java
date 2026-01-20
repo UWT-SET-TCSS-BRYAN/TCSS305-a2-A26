@@ -4,6 +4,7 @@
 
 package edu.uw.tcss.logic;
 
+import edu.uw.tcss.model.CollisionComparators;
 import edu.uw.tcss.model.Direction;
 import edu.uw.tcss.model.Light;
 import edu.uw.tcss.model.Terrain;
@@ -12,9 +13,12 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 
 
 /**
@@ -25,6 +29,11 @@ import java.util.Map;
  */
 public class RoadRage implements PropertyChangeEnabledRoadRageControls {
     
+    /**
+     * Random number generator for tie-breaking collisions.
+     */
+    private static final Random RAND = new Random();
+
     /**
      * The number of clock ticks between light changes.
      */
@@ -46,12 +55,18 @@ public class RoadRage implements PropertyChangeEnabledRoadRageControls {
     private Light myLight;
     
     /**
-     * The vehicles to move and display. 
+     * The vehicles to move and display.
      */
     private final List<Vehicle> myVehicles;
-    
+
     /**
-     * Manager for Property Change Listeners. 
+     * The Comparator used to resolve collisions.
+     * Default uses mass-based comparison (heavier wins).
+     */
+    private Comparator<Vehicle> myCollisionComparator = CollisionComparators.getDefault();
+
+    /**
+     * Manager for Property Change Listeners.
      */
     private final PropertyChangeSupport myPcs;
     
@@ -91,15 +106,13 @@ public class RoadRage implements PropertyChangeEnabledRoadRageControls {
 
             // look for collisions
             for (final Vehicle other : myVehicles) {
-                if (v.equals(other)) { // use of == is intentional - checking for same object
-                    // don't collide with self
+                if (v == other) { // don't collide with self
                     continue;
                 }
 
                 if (v.getX() == other.getX() && v.getY() == other.getY()) { //NOPMD
-                    // tell both vehicles they have collided
-                    v.collide(other);
-                    other.collide(v);
+                    // resolve collision using the current Comparator
+                    resolveCollision(v, other);
                 }
             }
         }
@@ -193,24 +206,26 @@ public class RoadRage implements PropertyChangeEnabledRoadRageControls {
     
     /**
      * Sets the paint color appropriately for the current lights.
-     * 
+     *
      * @param theLight The Light to base the color on.
      */
     private void setLightColor(final Light theLight) {
         final Light old = myLight;
         myLight = theLight;
-        myPcs.firePropertyChange(PROPERTY_LIGHT, old, myLight); 
+        final var event = new RoadRageEvent.LightChanged(old, myLight, RoadRageEvent.now());
+        myPcs.firePropertyChange(event.getPropertyName(), null, event);
     }
     
     /**
-     * Sets the time step for the simulation. 
-     * 
-     * @param theTimestep the time to set. 
+     * Sets the time step for the simulation.
+     *
+     * @param theTimestep the time to set.
      */
     private void setTimeStep(final long theTimestep) {
         final long old = myTimestep;
         myTimestep = theTimestep;
-        myPcs.firePropertyChange(PROPERTY_TIME, old, myTimestep);
+        final var event = new RoadRageEvent.TimeChanged(old, myTimestep, RoadRageEvent.now());
+        myPcs.firePropertyChange(event.getPropertyName(), null, event);
     }
     
     /**
@@ -221,21 +236,24 @@ public class RoadRage implements PropertyChangeEnabledRoadRageControls {
     }
     
     /**
-     * Inform PropertyChagneListeners of the current state of vehicles.
+     * Inform PropertyChangeListeners of the current state of vehicles.
      */
     private void fireVehicleChange() {
-        myPcs.firePropertyChange(PROPERTY_VEHICLES, null, new ArrayList<>(myVehicles));
+        final var event = new RoadRageEvent.VehiclesChanged(
+                new ArrayList<>(myVehicles), RoadRageEvent.now());
+        myPcs.firePropertyChange(event.getPropertyName(), null, event);
     }
     
     /**
-     * Inform PropertyChagneListeners of the current 2D Terrain grid state.
+     * Inform PropertyChangeListeners of the current 2D Terrain grid state.
      */
     private void fireGridChange() {
-        myPcs.firePropertyChange(PROPERTY_GRID, null, myGrid.clone());
+        final var event = new RoadRageEvent.GridChanged(myGrid.clone(), RoadRageEvent.now());
+        myPcs.firePropertyChange(event.getPropertyName(), null, event);
     }
     
     /**
-     * Reset all of the vehicles to their original state. 
+     * Reset all of the vehicles to their original state.
      */
     private void resetVehicles() {
         for (final Vehicle mov : myVehicles) {
@@ -243,4 +261,33 @@ public class RoadRage implements PropertyChangeEnabledRoadRageControls {
         }
     }
 
+    /**
+     * Resolves a collision between two vehicles using the current Comparator.
+     * The vehicle that compares as "lesser" is killed.
+     * If vehicles are equal, one is randomly selected to die.
+     *
+     * @param theV1 the first vehicle
+     * @param theV2 the second vehicle
+     */
+    private void resolveCollision(final Vehicle theV1, final Vehicle theV2) {
+        if (theV1.isAlive() && theV2.isAlive()) {
+            final int result = myCollisionComparator.compare(theV1, theV2);
+            if (result < 0) {
+                theV1.collide();  // v1 is "lesser" - v1 dies
+            } else if (result > 0) {
+                theV2.collide();  // v2 is "lesser" - v2 dies
+            } else if (RAND.nextBoolean()) {
+                theV1.collide();  // tie - coin flip
+            } else {
+                theV2.collide();
+            }
+        }
+    }
+
+    @Override
+    public void setCollisionComparator(final Comparator<Vehicle> theComparator) {
+        myCollisionComparator =
+                Objects.requireNonNullElseGet(theComparator,
+                        CollisionComparators::getDefault);
+    }
 }

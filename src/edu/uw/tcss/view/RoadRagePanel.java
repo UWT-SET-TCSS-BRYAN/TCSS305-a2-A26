@@ -4,12 +4,8 @@
 
 package edu.uw.tcss.view;
 
-import static edu.uw.tcss.logic.PropertyChangeEnabledRoadRageControls.PROPERTY_GRID;
-import static edu.uw.tcss.logic.PropertyChangeEnabledRoadRageControls.PROPERTY_LIGHT;
-import static edu.uw.tcss.logic.PropertyChangeEnabledRoadRageControls.PROPERTY_TIME;
-import static edu.uw.tcss.logic.PropertyChangeEnabledRoadRageControls.PROPERTY_VEHICLES;
-
 import edu.uw.tcss.model.Direction;
+import edu.uw.tcss.logic.RoadRageEvent;
 import edu.uw.tcss.model.Light;
 import edu.uw.tcss.model.Terrain;
 import edu.uw.tcss.model.Vehicle;
@@ -160,7 +156,6 @@ public final class RoadRagePanel extends JPanel implements
         // draw vehicles
         for (final Vehicle v : myVehicles) {
             final String imageFilename = "icons//" + v.getImageFileName();
-            //final String imageFilename = v.getImageFileName();
             ImageIcon imgIcon = new ImageIcon(imageFilename);
 
             if (imgIcon.getImageLoadStatus() != MediaTracker.COMPLETE) {
@@ -427,28 +422,14 @@ public final class RoadRagePanel extends JPanel implements
 
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
-        switch (theEvent.getPropertyName()) {
-            case PROPERTY_GRID:
-                myGrid = (Terrain[][]) theEvent.getNewValue();
-                repaint();
-                break;
-            case PROPERTY_LIGHT:
-                setLightColor((Light) theEvent.getNewValue());
-                repaint();
-                break;
-            case PROPERTY_VEHICLES:
-                @SuppressWarnings("unchecked") 
-                final List<Vehicle> list = (List<Vehicle>) theEvent.getNewValue();
-                myVehicles = new ArrayList<>(list);
-                repaint();
-                break;
-            case PROPERTY_TIME:
-                myTimestep = (Long) theEvent.getNewValue();
-                repaint();
-                break;
-            default:
-                break;  
-            
+        if (theEvent.getNewValue() instanceof final RoadRageEvent event) {
+            switch (event) {
+                case final RoadRageEvent.GridChanged e -> myGrid = e.grid();
+                case final RoadRageEvent.LightChanged e -> setLightColor(e.newLight());
+                case final RoadRageEvent.VehiclesChanged e -> myVehicles = new ArrayList<>(e.vehicles());
+                case final RoadRageEvent.TimeChanged e -> myTimestep = e.newTime();
+            }
+            repaint();
         }
     }
 
