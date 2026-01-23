@@ -2,8 +2,9 @@
  * TCSS 305 - Road Rage
  */
 
-package edu.uw.tcss.model;
+package edu.uw.tcss.logic;
 
+import edu.uw.tcss.model.Vehicle;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;

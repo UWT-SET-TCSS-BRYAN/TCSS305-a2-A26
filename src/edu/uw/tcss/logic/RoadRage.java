@@ -4,7 +4,6 @@
 
 package edu.uw.tcss.logic;
 
-import edu.uw.tcss.model.CollisionComparators;
 import edu.uw.tcss.model.Vehicle;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

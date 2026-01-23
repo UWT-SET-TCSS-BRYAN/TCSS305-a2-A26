@@ -6,8 +6,8 @@ package edu.uw.tcss.view;
 
 import edu.uw.tcss.io.FileLoader;
 import edu.uw.tcss.logic.PropertyChangeEnabledRoadRageControls;
-import edu.uw.tcss.model.CollisionComparators;
-import edu.uw.tcss.model.CollisionComparators.CollisionMode;
+import edu.uw.tcss.logic.CollisionComparators;
+import edu.uw.tcss.logic.CollisionComparators.CollisionMode;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
