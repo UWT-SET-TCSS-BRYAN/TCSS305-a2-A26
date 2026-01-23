@@ -4,6 +4,9 @@
 
 package edu.uw.tcss.model;
 
+import edu.uw.tcss.logic.Direction;
+import edu.uw.tcss.logic.Light;
+import edu.uw.tcss.logic.Terrain;
 import java.util.Map;
 
 /**
@@ -38,17 +41,16 @@ public interface Vehicle {
 
     /**
      * Called when this Vehicle loses a collision.
-     * Marks this vehicle as dead.
+     * Marks this vehicle as disabled.
      */
     void collide();
 
     /**
-     * Returns the number of updates between this vehicle's death and when it
-     * should be revived.
+     * Returns the number of updates this vehicle stays disabled after a collision.
      *
      * @return the number of updates.
      */
-    int getDeathTime();
+    int getDisabledDuration();
 
     /**
      * Returns the mass of this vehicle. Heavier vehicles survive collisions
@@ -88,15 +90,15 @@ public interface Vehicle {
     int getY();
 
     /**
-     * Returns whether this Vehicle object is alive and should move on the map.
-     * 
-     * @return true if the object is alive, false otherwise.
+     * Returns whether this Vehicle object is enabled and should move on the map.
+     *
+     * @return true if the object is enabled, false otherwise.
      */
-    boolean isAlive();
+    boolean isEnabled();
 
     /**
-     * Called by the UI to notify a dead vehicle that 1 movement round has
-     * passed, so that it will become 1 move closer to revival.
+     * Called by the UI to notify a disabled vehicle that 1 movement round has
+     * passed, so that it will become 1 move closer to becoming enabled again.
      */
     void poke();
 

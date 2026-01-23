@@ -4,8 +4,6 @@
 
 package edu.uw.tcss.logic;
 
-import edu.uw.tcss.model.Light;
-import edu.uw.tcss.model.Terrain;
 import edu.uw.tcss.model.Vehicle;
 import java.util.List;
 

@@ -2,7 +2,7 @@
  * TCSS 305 - Road Rage
  */
 
-package edu.uw.tcss.model;
+package edu.uw.tcss.logic;
 
 /**
  * An enumeration (and associated functionality) for types of terrain that may

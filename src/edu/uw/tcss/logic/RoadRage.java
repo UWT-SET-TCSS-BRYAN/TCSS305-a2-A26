@@ -5,9 +5,6 @@
 package edu.uw.tcss.logic;
 
 import edu.uw.tcss.model.CollisionComparators;
-import edu.uw.tcss.model.Direction;
-import edu.uw.tcss.model.Light;
-import edu.uw.tcss.model.Terrain;
 import edu.uw.tcss.model.Vehicle;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -90,7 +87,7 @@ public class RoadRage implements PropertyChangeEnabledRoadRageControls {
             final Map<Direction, Terrain> neighbors = generateNeighbors(v);
 
             // move the vehicle
-            if (v.isAlive()) {
+            if (v.isEnabled()) {
                 final Direction newDirection = v.chooseDirection(neighbors);
                 v.setDirection(newDirection);
 
@@ -263,19 +260,19 @@ public class RoadRage implements PropertyChangeEnabledRoadRageControls {
 
     /**
      * Resolves a collision between two vehicles using the current Comparator.
-     * The vehicle that compares as "lesser" is killed.
-     * If vehicles are equal, one is randomly selected to die.
+     * The vehicle that compares as "lesser" becomes disabled.
+     * If vehicles are equal, one is randomly selected to become disabled.
      *
      * @param theV1 the first vehicle
      * @param theV2 the second vehicle
      */
     private void resolveCollision(final Vehicle theV1, final Vehicle theV2) {
-        if (theV1.isAlive() && theV2.isAlive()) {
+        if (theV1.isEnabled() && theV2.isEnabled()) {
             final int result = myCollisionComparator.compare(theV1, theV2);
             if (result < 0) {
-                theV1.collide();  // v1 is "lesser" - v1 dies
+                theV1.collide();  // v1 is "lesser" - v1 becomes disabled
             } else if (result > 0) {
-                theV2.collide();  // v2 is "lesser" - v2 dies
+                theV2.collide();  // v2 is "lesser" - v2 becomes disabled
             } else if (RAND.nextBoolean()) {
                 theV1.collide();  // tie - coin flip
             } else {

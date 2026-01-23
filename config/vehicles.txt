@@ -1,0 +1,15 @@
+# Road Rage - Vehicle Configuration
+#
+# List vehicle class names (one per line) to enable them in the simulation.
+# Comment out a line with # to disable that vehicle type.
+# Vehicle classes must be in the edu.uw.tcss.model package.
+#
+# Phase 1: Implement these first (stubs provided)
+Truck
+Car
+Bicycle
+
+# Phase 2: Uncomment these after creating AbstractVehicle
+#Taxi
+#Atv
+#Human

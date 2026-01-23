@@ -10,12 +10,40 @@ import java.util.Random;
 
 /**
  * Factory class providing various Comparators for vehicle collision resolution.
- * Each inner class implements a different collision strategy.
+ * Demonstrates the Strategy Pattern: each comparator encapsulates a different
+ * algorithm for determining collision winners.
  *
  * @author Charles Bryan
- * @version Winter 2025
+ * @version Winter 2026
  */
 public final class CollisionComparators {
+
+    /** Random number generator for random collision outcomes. */
+    private static final Random RANDOM = new Random();
+
+    /**
+     * Strategy 1: Mass-based comparison (realistic physics).
+     * Heavier vehicles win collisions.
+     */
+    private static final Comparator<Vehicle> BY_MASS =
+        Comparator.comparing(Vehicle::getMass);
+
+    /** Bound for random outcome generation for -1 - 1 range. */
+    private static final int RANDOM_BOUND = 3;
+
+    /**
+     * Strategy 2: Random comparison (chaos mode).
+     * Returns -1, 0, or 1 randomly to determine winner.
+     */
+    private static final Comparator<Vehicle> RANDOM_OUTCOME =
+        (_, _) -> RANDOM.nextInt(RANDOM_BOUND) - 1;
+
+    /**
+     * Strategy 3: Inverted mass (underdog mode).
+     * Lighter vehicles win collisions - David beats Goliath!
+     */
+    private static final Comparator<Vehicle> INVERTED_MASS =
+        Comparator.comparing(Vehicle::getMass).reversed();
 
     /** Private constructor to prevent instantiation. */
     private CollisionComparators() {
@@ -23,96 +51,34 @@ public final class CollisionComparators {
     }
 
     /**
-     * Returns a list of all available collision modes.
+     * Factory method: Returns a list of all available collision modes.
      * GUI components can use this to build selection controls.
      *
      * @return list of all collision modes
      */
     public static List<CollisionMode> getAll() {
         return List.of(
-            new CollisionMode("Mass (Realistic)", new Mass()),
-//            new CollisionMode("Death Time (Legacy)", new DeathTime()),
-            new CollisionMode("Random (Chaos)", new RandomOutcome()),
-            new CollisionMode("Inverted Mass (Underdog)", new Inverted())
+            new CollisionMode("Mass (Realistic)", BY_MASS),
+            new CollisionMode("Random (Chaos)", RANDOM_OUTCOME),
+            new CollisionMode("Inverted Mass (Underdog)", INVERTED_MASS)
         );
     }
 
-//    public static List<CollisionMode> getAll() {
-//        return List.of(
-//                new CollisionMode("Mass (Realistic)",
-//                        Comparator.comparing(Vehicle::getMass)),
-//                new CollisionMode("Death Time (Legacy)",
-//                        Comparator.comparing(Vehicle::getDeathTime).reversed()),
-//                new CollisionMode("Random (Chaos)",
-//                        (v1, v2) -> new Random().nextInt(3) - 1),
-//                new CollisionMode("Inverted Mass (Underdog)",
-//                        Comparator.comparing(Vehicle::getMass).reversed())
-//        );
-//    }
-
     /**
-     * Returns the default collision comparator (mass-based).
+     * Factory method: Returns the default collision comparator (mass-based).
      *
      * @return the default comparator
      */
     public static Comparator<Vehicle> getDefault() {
-        return new Mass();
+        return BY_MASS;
     }
 
     /**
-     * A wrapper that pairs a collision comparator with its display name.
+     * A record pairing a collision comparator with its display name.
+     * Used by the GUI to present collision mode options to the user.
      *
      * @param displayName the human-readable name for UI display
-     * @param comparator the comparator implementation
+     * @param comparator the comparator implementation (the strategy)
      */
     public record CollisionMode(String displayName, Comparator<Vehicle> comparator) { }
-
-    /**
-     * Compares vehicles by mass - heavier vehicles win collisions.
-     * This is the realistic/physics-based mode.
-     */
-    public static class Mass implements Comparator<Vehicle> {
-        @Override
-        public int compare(final Vehicle theV1, final Vehicle theV2) {
-            return Integer.compare(theV1.getMass(), theV2.getMass());
-        }
-    }
-
-    /**
-     * Compares vehicles by death time - lower death time wins.
-     * This replicates the original/legacy collision behavior.
-     */
-    public static class DeathTime implements Comparator<Vehicle> {
-        @Override
-        public int compare(final Vehicle theV1, final Vehicle theV2) {
-            // Lower death time = wins, so reverse the comparison
-            return Integer.compare(theV2.getDeathTime(), theV1.getDeathTime());
-        }
-    }
-
-    /**
-     * Random collision outcomes - chaos mode!
-     */
-    public static class RandomOutcome implements Comparator<Vehicle> {
-        /** Random number generator. */
-        private static final Random RAND = new Random();
-
-        @Override
-        public int compare(final Vehicle theV1, final Vehicle theV2) {
-            // Returns -1, 0, or 1 randomly
-            return RAND.nextInt(3) - 1;
-        }
-    }
-
-    /**
-     * Inverted mass comparison - lighter vehicles win.
-     * David vs Goliath mode - the underdog always wins!
-     */
-    public static class Inverted implements Comparator<Vehicle> {
-        @Override
-        public int compare(final Vehicle theV1, final Vehicle theV2) {
-            // Inverted: lighter vehicle wins
-            return Integer.compare(theV2.getMass(), theV1.getMass());
-        }
-    }
 }

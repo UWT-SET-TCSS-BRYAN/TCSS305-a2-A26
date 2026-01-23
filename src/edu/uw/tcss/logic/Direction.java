@@ -2,7 +2,7 @@
  * TCSS 305 - Road Rage
  */
 
-package edu.uw.tcss.model;
+package edu.uw.tcss.logic;
 
 import java.util.Random;
 
