@@ -249,7 +249,7 @@ public class RoadRage implements PropertyChangeEnabledRoadRageControls {
     }
     
     /**
-     * Reset all of the vehicles to their original state.
+     * Reset all vehicles to their original state.
      */
     private void resetVehicles() {
         for (final Vehicle mov : myVehicles) {

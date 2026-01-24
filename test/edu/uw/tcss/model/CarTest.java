@@ -28,16 +28,20 @@ class CarTest {
     /** Expected disabled duration for a Car. */
     private static final int CAR_DISABLED_DURATION = 15;
 
+    private static final int INITIAL_X = 15;
+
+    private static final int INITIAL_Y = 25;
+
     /**
      * Test that the Car constructor correctly initializes position and direction.
      */
     @Test
     void testConstructorInitializesFieldsCorrectly() {
-        final Car car = new Car(15, 25, Direction.EAST);
+        final Car car = new Car(INITIAL_X, INITIAL_Y, Direction.EAST);
 
         assertAll("Constructor should initialize all fields correctly",
-            () -> assertEquals(15, car.getX(), "X coordinate should be initialized to 15"),
-            () -> assertEquals(25, car.getY(), "Y coordinate should be initialized to 25"),
+            () -> assertEquals(INITIAL_X, car.getX(), "X coordinate should be initialized to 15"),
+            () -> assertEquals(INITIAL_Y, car.getY(), "Y coordinate should be initialized to 25"),
             () -> assertEquals(Direction.EAST, car.getDirection(),
                              "Direction should be initialized to EAST")
         );

@@ -5,9 +5,9 @@
 package edu.uw.tcss.view;
 
 import edu.uw.tcss.io.FileLoader;
-import edu.uw.tcss.logic.PropertyChangeEnabledRoadRageControls;
 import edu.uw.tcss.logic.CollisionComparators;
 import edu.uw.tcss.logic.CollisionComparators.CollisionMode;
+import edu.uw.tcss.logic.PropertyChangeEnabledRoadRageControls;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -17,6 +17,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serial;
+import java.util.Optional;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -208,7 +209,7 @@ public final class RoadRageGUI extends JFrame implements ActionListener {
                                                           final boolean isSelected,
                                                           final boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof CollisionMode mode) {
+                if (value instanceof final CollisionMode mode) {
                     setText(mode.displayName());
                 }
                 return this;
@@ -216,12 +217,9 @@ public final class RoadRageGUI extends JFrame implements ActionListener {
         });
 
         // Selection handler extracts comparator from the mode
-        collisionCombo.addActionListener(e -> {
-            final CollisionMode selected = (CollisionMode) collisionCombo.getSelectedItem();
-            if (selected != null) {
-                myRoadRage.setCollisionComparator(selected.comparator());
-            }
-        });
+        collisionCombo.addActionListener(e ->
+            Optional.ofNullable((CollisionMode) collisionCombo.getSelectedItem())
+                    .ifPresent(mode -> myRoadRage.setCollisionComparator(mode.comparator())));
 
         final Container southPanel = new JPanel(new FlowLayout());
         southPanel.add(new JLabel("FPS: "));
@@ -243,7 +241,7 @@ public final class RoadRageGUI extends JFrame implements ActionListener {
         setLocation(SCREEN_SIZE.width / 2 - getWidth() / 2,
                     SCREEN_SIZE.height / 2 - getHeight() / 2);
     }
-    
+
     /**
      * Returns a new JButton with the specified text.
      * 

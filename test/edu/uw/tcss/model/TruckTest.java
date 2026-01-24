@@ -32,16 +32,20 @@ class TruckTest {
     /** Expected disabled duration for a Truck. */
     private static final int TRUCK_DISABLED_DURATION = 5;
 
+    private static final int INITIAL_X = 10;
+
+    private static final int INITIAL_Y = 25;
+
     /**
      * Test that the Truck constructor correctly initializes position and direction.
      */
     @Test
     void testConstructorInitializesFieldsCorrectly() {
-        final Truck truck = new Truck(10, 20, Direction.NORTH);
+        final Truck truck = new Truck(INITIAL_X, INITIAL_Y, Direction.NORTH);
 
         assertAll("Constructor should initialize all fields correctly",
-            () -> assertEquals(10, truck.getX(), "X coordinate should be initialized to 10"),
-            () -> assertEquals(20, truck.getY(), "Y coordinate should be initialized to 20"),
+            () -> assertEquals(INITIAL_X, truck.getX(), "X coordinate should be initialized to 10"),
+            () -> assertEquals(INITIAL_Y, truck.getY(), "Y coordinate should be initialized to 20"),
             () -> assertEquals(Direction.NORTH, truck.getDirection(),
                              "Direction should be initialized to NORTH")
         );
@@ -140,6 +144,21 @@ class TruckTest {
      */
     @Test
     void testChooseDirectionRandomlySelectsFromValidDirections() {
+        final Set<Direction> seenDirections = getDirections();
+
+        // Truck should randomly choose from NORTH, WEST, or EAST
+        // After 50 tries, we should have seen at least 2 different directions
+        assertTrue(seenDirections.size() >= 2,
+                   "Truck should randomly select from valid directions. "
+                   + "Expected at least 2 different directions after "
+                   + TRIES_FOR_RANDOMNESS + " tries, but only saw: " + seenDirections);
+
+        // None of the chosen directions should be SOUTH (the wall)
+        assertFalse(seenDirections.contains(Direction.SOUTH),
+                    "Truck should never choose SOUTH when it's a WALL");
+    }
+
+    private Set<Direction> getDirections() {
         final Truck truck = new Truck(0, 0, Direction.NORTH);
 
         // Set up neighbors: STREET to north, west, and east (all valid)
@@ -157,17 +176,7 @@ class TruckTest {
             final Direction chosen = truck.chooseDirection(neighbors);
             seenDirections.add(chosen);
         }
-
-        // Truck should randomly choose from NORTH, WEST, or EAST
-        // After 50 tries, we should have seen at least 2 different directions
-        assertTrue(seenDirections.size() >= 2,
-                   "Truck should randomly select from valid directions. "
-                   + "Expected at least 2 different directions after "
-                   + TRIES_FOR_RANDOMNESS + " tries, but only saw: " + seenDirections);
-
-        // None of the chosen directions should be SOUTH (the wall)
-        assertFalse(seenDirections.contains(Direction.SOUTH),
-                    "Truck should never choose SOUTH when it's a WALL");
+        return seenDirections;
     }
 
     /**

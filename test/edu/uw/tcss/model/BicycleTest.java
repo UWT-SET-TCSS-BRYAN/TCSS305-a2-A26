@@ -26,16 +26,20 @@ class BicycleTest {
     /** Expected disabled duration for a Bicycle. */
     private static final int BICYCLE_DISABLED_DURATION = 35;
 
+    private static final int INITIAL_X = 8;
+
+    private static final int INITIAL_Y = 12;
+
     /**
      * Test that the Bicycle constructor correctly initializes position and direction.
      */
     @Test
     void testConstructorInitializesFieldsCorrectly() {
-        final Bicycle bicycle = new Bicycle(8, 12, Direction.WEST);
+        final Bicycle bicycle = new Bicycle(INITIAL_X, INITIAL_Y, Direction.WEST);
 
         assertAll("Constructor should initialize all fields correctly",
-            () -> assertEquals(8, bicycle.getX(), "X coordinate should be initialized to 8"),
-            () -> assertEquals(12, bicycle.getY(), "Y coordinate should be initialized to 12"),
+            () -> assertEquals(INITIAL_X, bicycle.getX(), "X coordinate should be initialized to 8"),
+            () -> assertEquals(INITIAL_Y, bicycle.getY(), "Y coordinate should be initialized to 12"),
             () -> assertEquals(Direction.WEST, bicycle.getDirection(),
                              "Direction should be initialized to WEST")
         );
@@ -126,8 +130,8 @@ class BicycleTest {
 
         final Direction chosen = bicycle.chooseDirection(neighbors);
         assertEquals(Direction.NORTH, chosen,
-                     "Bicycle should choose TRAIL straight ahead (NORTH) " +
-                     "over other valid terrain");
+                     "Bicycle should choose TRAIL straight ahead (NORTH) "
+                     + "over other valid terrain");
     }
 
     /**
@@ -150,8 +154,8 @@ class BicycleTest {
 
         final Direction chosen = bicycle.chooseDirection(neighbors);
         assertEquals(Direction.WEST, chosen,
-                     "Bicycle should turn left (WEST) to reach TRAIL " +
-                     "when no trail is straight ahead");
+                     "Bicycle should turn left (WEST) to reach TRAIL "
+                     + "when no trail is straight ahead");
     }
 
     /**
@@ -173,8 +177,8 @@ class BicycleTest {
 
         final Direction chosen = bicycle.chooseDirection(neighbors);
         assertEquals(Direction.EAST, chosen,
-                     "Bicycle should turn right (EAST) to reach TRAIL " +
-                     "when no trail is ahead or left");
+                     "Bicycle should turn right (EAST) to reach TRAIL "
+                     + "when no trail is ahead or left");
     }
 
     /**
@@ -198,8 +202,8 @@ class BicycleTest {
 
         final Direction chosen = bicycle.chooseDirection(neighbors);
         assertEquals(Direction.NORTH, chosen,
-                     "Bicycle should NOT reverse to face TRAIL behind. " +
-                     "Should follow normal S→L→R preference and go straight (NORTH)");
+                     "Bicycle should NOT reverse to face TRAIL behind. "
+                     + "Should follow normal S→L→R preference and go straight (NORTH)");
     }
 
     /**

@@ -5,7 +5,7 @@
 ## Assignment Instructions
 
 Full instructions available at:
-[PLACEHOLDER - Add link when published]
+[Assignment 2: Road Rage](https://cfb3.github.io/TCSS305-GUIDES/assignments/a2/)
 
 ## Project Structure
 

@@ -5,8 +5,8 @@
 package edu.uw.tcss.view;
 
 import edu.uw.tcss.logic.Direction;
-import edu.uw.tcss.logic.RoadRageEvent;
 import edu.uw.tcss.logic.Light;
+import edu.uw.tcss.logic.RoadRageEvent;
 import edu.uw.tcss.logic.Terrain;
 import edu.uw.tcss.model.Vehicle;
 import java.awt.BasicStroke;

@@ -49,6 +49,10 @@ public final class FileLoader {
     /** Character indicating a comment line in config files. */
     private static final char COMMENT_CHAR = '#';
 
+
+    /** Separator for error messages. */
+    private static final String ERROR_MESSAGE_SEPARATOR = ":\n\n";
+
     /** Set of enabled vehicle types loaded from config. */
     private static Set<String> enabledVehicles;
 
@@ -71,14 +75,14 @@ public final class FileLoader {
         // Load enabled vehicles from config
         loadVehicleConfig(theFrame);
 
-        try (Scanner input = new Scanner(new File(CITY_FILE))) {
+        try (final Scanner input = new Scanner(new File(CITY_FILE))) {
             // First, we read the map description
             // Then, we read where the initial vehicles are
             result = new RoadRage(readGrid(input), readVehicles(input, theFrame));
 
         } catch (final IOException ioe) {
             JOptionPane.showMessageDialog(theFrame,
-                    "Could not read city map file " + CITY_FILE + ":\n\n" + ioe.getMessage(),
+                    "Could not read city map file " + CITY_FILE + ERROR_MESSAGE_SEPARATOR + ioe.getMessage(),
                     "I/O Error",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -94,7 +98,7 @@ public final class FileLoader {
     private static void loadVehicleConfig(final JFrame theFrame) {
         enabledVehicles = new HashSet<>();
 
-        try (Scanner configScanner = new Scanner(new File(VEHICLES_CONFIG))) {
+        try (final Scanner configScanner = new Scanner(new File(VEHICLES_CONFIG))) {
             while (configScanner.hasNextLine()) {
                 final String line = configScanner.nextLine().trim();
 
@@ -106,12 +110,13 @@ public final class FileLoader {
             LOGGER.info(() -> "Loaded vehicle config: " + enabledVehicles);
 
         } catch (final IOException ioe) {
+            final String message = "Could not read vehicle config file " + VEHICLES_CONFIG;
             LOGGER.log(Level.WARNING,
-                    "Could not read vehicle config file " + VEHICLES_CONFIG
-                            + ". All vehicles will be disabled.", ioe);
+                    message + ". All vehicles will be disabled.", ioe);
             JOptionPane.showMessageDialog(theFrame,
-                    "Could not read vehicle config file " + VEHICLES_CONFIG + ":\n\n"
-                            + ioe.getMessage() + "\n\nNo vehicles will be loaded.",
+                    message
+                            + ERROR_MESSAGE_SEPARATOR + ioe.getMessage()
+                            + "\n\nNo vehicles will be loaded.",
                     "Configuration Warning",
                     JOptionPane.WARNING_MESSAGE);
         }
@@ -160,7 +165,7 @@ public final class FileLoader {
             final String className = getClassName(vehicleType);
 
             // Only create vehicle if its type is enabled in config
-            if (className != null && enabledVehicles.contains(className)) {
+            if (enabledVehicles.contains(className)) {
                 final Vehicle vehicle = createVehicle(className, vehicleX, vehicleY,
                         Direction.valueOf(vehicleDirection), theFrame);
                 if (vehicle != null) {
@@ -185,7 +190,7 @@ public final class FileLoader {
             case 'T' -> "Truck";
             case 'X' -> "Taxi";
             case 'C' -> "Car";
-            default -> null;
+            default -> throw new IllegalArgumentException("Unknown vehicle type: " + theType);
         };
     }
 

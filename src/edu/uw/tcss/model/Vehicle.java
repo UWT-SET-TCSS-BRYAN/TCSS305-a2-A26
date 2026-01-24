@@ -20,12 +20,12 @@ import java.util.Map;
 public interface Vehicle {
 
     /**
-     * Returns whether or not this object may move onto the given type of
+     * Returns whether this object may move onto the given type of
      * terrain, when the street lights are the given color.
      * 
      * @param theTerrain The terrain.
      * @param theLight The light color.
-     * @return whether or not this object may move onto the given type of
+     * @return whether this object may move onto the given type of
      *         terrain when the street lights are the given color.
      */
     boolean canPass(Terrain theTerrain, Light theLight);

@@ -62,7 +62,8 @@ public sealed interface RoadRageEvent permits
 
     /**
      * Returns the property name for this event type, used when registering property-specific
-     * listeners via {@link edu.uw.tcss.logic.PropertyChangeEnabledRoadRageControls#addPropertyChangeListener(String, java.beans.PropertyChangeListener)}.
+     * listeners via {@link edu.uw.tcss.logic.PropertyChangeEnabledRoadRageControls#addPropertyChangeListener
+     * (String, java.beans.PropertyChangeListener)}.
      *
      * <p><strong>Default Implementation:</strong> Returns the simple class name of the event
      * (e.g., "LightChanged", "VehiclesChanged"). This ensures consistency between
