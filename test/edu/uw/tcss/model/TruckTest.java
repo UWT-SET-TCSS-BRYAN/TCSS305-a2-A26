@@ -44,8 +44,8 @@ class TruckTest {
         final Truck truck = new Truck(INITIAL_X, INITIAL_Y, Direction.NORTH);
 
         assertAll("Constructor should initialize all fields correctly",
-            () -> assertEquals(INITIAL_X, truck.getX(), "X coordinate should be initialized to 10"),
-            () -> assertEquals(INITIAL_Y, truck.getY(), "Y coordinate should be initialized to 20"),
+            () -> assertEquals(INITIAL_X, truck.getX(), "X coordinate should be initialized to " + INITIAL_X),
+            () -> assertEquals(INITIAL_Y, truck.getY(), "Y coordinate should be initialized to " + INITIAL_Y),
             () -> assertEquals(Direction.NORTH, truck.getDirection(),
                              "Direction should be initialized to NORTH")
         );

@@ -40,8 +40,8 @@ class CarTest {
         final Car car = new Car(INITIAL_X, INITIAL_Y, Direction.EAST);
 
         assertAll("Constructor should initialize all fields correctly",
-            () -> assertEquals(INITIAL_X, car.getX(), "X coordinate should be initialized to 15"),
-            () -> assertEquals(INITIAL_Y, car.getY(), "Y coordinate should be initialized to 25"),
+            () -> assertEquals(INITIAL_X, car.getX(), "X coordinate should be initialized to " + INITIAL_X),
+            () -> assertEquals(INITIAL_Y, car.getY(), "Y coordinate should be initialized to " + INITIAL_Y),
             () -> assertEquals(Direction.EAST, car.getDirection(),
                              "Direction should be initialized to EAST")
         );

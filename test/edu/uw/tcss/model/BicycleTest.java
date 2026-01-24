@@ -38,8 +38,8 @@ class BicycleTest {
         final Bicycle bicycle = new Bicycle(INITIAL_X, INITIAL_Y, Direction.WEST);
 
         assertAll("Constructor should initialize all fields correctly",
-            () -> assertEquals(INITIAL_X, bicycle.getX(), "X coordinate should be initialized to 8"),
-            () -> assertEquals(INITIAL_Y, bicycle.getY(), "Y coordinate should be initialized to 12"),
+            () -> assertEquals(INITIAL_X, bicycle.getX(), "X coordinate should be initialized to " + INITIAL_X),
+            () -> assertEquals(INITIAL_Y, bicycle.getY(), "Y coordinate should be initialized to " + INITIAL_Y),
             () -> assertEquals(Direction.WEST, bicycle.getDirection(),
                              "Direction should be initialized to WEST")
         );
