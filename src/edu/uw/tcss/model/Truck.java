@@ -5,17 +5,18 @@ import edu.uw.tcss.logic.Light;
 import edu.uw.tcss.logic.Terrain;
 import java.util.Map;
 
+// TODO add a class Javadoc comment here, including @author and @version tags.
 public class Truck implements Vehicle {
 
-    public Truck(final int theX, final int theY, final Direction theDir) {
+    public Truck(final int x, final int y, final Direction dir) {
 
     }
 
-    public Direction chooseDirection(final Map<Direction, Terrain> theNeighbors) {
+    public Direction chooseDirection(final Map<Direction, Terrain> neighbors) {
         return null;
     }
 
-    public boolean canPass(final Terrain theTerrain, final Light theLight) {
+    public boolean canPass(final Terrain terrain, final Light light) {
 
         return false;
     }
@@ -62,15 +63,15 @@ public class Truck implements Vehicle {
     }
 
 
-    public void setDirection(final Direction theDir) {
+    public void setDirection(final Direction dir) {
 
     }
 
-    public void setX(final int theX) {
+    public void setX(final int x) {
 
     }
 
-    public void setY(final int theY) {
+    public void setY(final int y) {
 
     }
 

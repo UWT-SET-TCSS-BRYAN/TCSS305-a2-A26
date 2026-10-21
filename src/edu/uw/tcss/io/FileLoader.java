@@ -28,20 +28,27 @@ import javax.swing.JOptionPane;
  * Loads the city map and vehicles from configuration files.
  *
  * @author Charles Bryan
- * @version Winter 2026
+ * @version Autumn 2026
  */
 public final class FileLoader {
 
     /** Logger for this class. */
     private static final Logger LOGGER = Logger.getLogger(FileLoader.class.getName());
 
-    /** The filename of the city map. */
-    private static final String CITY_FILE =
-            "maps" + File.separator + "city_map1.txt";
+    /** The folder that holds the city map files. */
+    private static final String MAP_FOLDER = "maps" + File.separator;
+
+    /** The map used when config/map.txt is missing or names no map. */
+    private static final String DEFAULT_MAP = "city_map1.txt";
+
+    /** The folder that holds the configuration files. */
+    private static final String CONFIG_FOLDER = "config" + File.separator;
+
+    /** The configuration file naming which map to load. */
+    private static final String MAP_CONFIG = CONFIG_FOLDER + "map.txt";
 
     /** The filename of the vehicle configuration. */
-    private static final String VEHICLES_CONFIG =
-            "config" + File.separator + "vehicles.txt";
+    private static final String VEHICLES_CONFIG = CONFIG_FOLDER + "vehicles.txt";
 
     /** The package where vehicle classes are located. */
     private static final String VEHICLE_PACKAGE = "edu.uw.tcss.model.";
@@ -66,23 +73,24 @@ public final class FileLoader {
     /**
      * Read the city text file and build a RoadRage simulation based on the file.
      *
-     * @param theFrame the Frame containing the panel. Needed for error output.
+     * @param frame the Frame containing the panel. Needed for error output.
      * @return the RoadRage simulation based on the city text file.
      */
-    public static PropertyChangeEnabledRoadRageControls readCity(final JFrame theFrame) {
+    public static PropertyChangeEnabledRoadRageControls readCity(final JFrame frame) {
         PropertyChangeEnabledRoadRageControls result = null;
 
-        // Load enabled vehicles from config
-        loadVehicleConfig(theFrame);
+        // Load enabled vehicles and the chosen map from config
+        loadVehicleConfig(frame);
+        final String cityFile = MAP_FOLDER + loadMapName();
 
-        try (final Scanner input = new Scanner(new File(CITY_FILE))) {
+        try (final Scanner input = new Scanner(new File(cityFile))) {
             // First, we read the map description
             // Then, we read where the initial vehicles are
-            result = new RoadRage(readGrid(input), readVehicles(input, theFrame));
+            result = new RoadRage(readGrid(input), readVehicles(input, frame));
 
         } catch (final IOException ioe) {
-            JOptionPane.showMessageDialog(theFrame,
-                    "Could not read city map file " + CITY_FILE + ERROR_MESSAGE_SEPARATOR + ioe.getMessage(),
+            JOptionPane.showMessageDialog(frame,
+                    "Could not read city map file " + cityFile + ERROR_MESSAGE_SEPARATOR + ioe.getMessage(),
                     "I/O Error",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -90,12 +98,36 @@ public final class FileLoader {
     }
 
     /**
+     * Reads the name of the map to load from the map.txt file. The first line that
+     * is neither blank nor a comment names a file in the maps folder.
+     *
+     * @return the map file name, or the default map if none is configured
+     */
+    private static String loadMapName() {
+        String result = DEFAULT_MAP;
+
+        try (final Scanner configScanner = new Scanner(new File(MAP_CONFIG))) {
+            while (configScanner.hasNextLine()) {
+                final String line = configScanner.nextLine().trim();
+                if (!line.isEmpty() && line.charAt(0) != COMMENT_CHAR) {
+                    result = line;
+                    break;
+                }
+            }
+        } catch (final IOException ioe) {
+            LOGGER.log(Level.INFO, "No map config found; using " + DEFAULT_MAP, ioe);
+        }
+        LOGGER.info("Loading map: " + result);
+        return result;
+    }
+
+    /**
      * Loads the vehicle configuration from the vehicles.txt file.
      * Populates the set of enabled vehicle class names.
      *
-     * @param theFrame the Frame for error display
+     * @param frame the Frame for error display
      */
-    private static void loadVehicleConfig(final JFrame theFrame) {
+    private static void loadVehicleConfig(final JFrame frame) {
         enabledVehicles = new HashSet<>();
 
         try (final Scanner configScanner = new Scanner(new File(VEHICLES_CONFIG))) {
@@ -113,7 +145,7 @@ public final class FileLoader {
             final String message = "Could not read vehicle config file " + VEHICLES_CONFIG;
             LOGGER.log(Level.WARNING,
                     message + ". All vehicles will be disabled.", ioe);
-            JOptionPane.showMessageDialog(theFrame,
+            JOptionPane.showMessageDialog(frame,
                     message
                             + ERROR_MESSAGE_SEPARATOR + ioe.getMessage()
                             + "\n\nNo vehicles will be loaded.",
@@ -125,16 +157,16 @@ public final class FileLoader {
     /**
      * Reads the grid portion of the map file.
      *
-     * @param theInput The input scanner.
+     * @param input The input scanner.
      * @return the grid of the terrains.
      */
-    private static Terrain[][] readGrid(final Scanner theInput) {
-        final int numRows = theInput.nextInt();
-        final int numColumns = theInput.nextInt();
-        theInput.nextLine();
+    private static Terrain[][] readGrid(final Scanner input) {
+        final int numRows = input.nextInt();
+        final int numColumns = input.nextInt();
+        input.nextLine();
         final Terrain[][] grid = new Terrain[numRows][numColumns];
         for (int row = 0; row < numRows; row++) {
-            final String line = theInput.nextLine();
+            final String line = input.nextLine();
             for (int column = 0; column < numColumns; column++) {
                 grid[row][column] = Terrain.valueOf(line.charAt(column));
             }
@@ -146,28 +178,28 @@ public final class FileLoader {
      * Reads the vehicle portion of the map file and instantiates vehicles
      * using reflection based on the enabled vehicles configuration.
      *
-     * @param theInput The input scanner.
-     * @param theFrame The frame for error display.
+     * @param input The input scanner.
+     * @param frame The frame for error display.
      * @return the list of Vehicles
      */
-    private static List<Vehicle> readVehicles(final Scanner theInput, final JFrame theFrame) {
+    private static List<Vehicle> readVehicles(final Scanner input, final JFrame frame) {
         final List<Vehicle> vehicles = new ArrayList<>();
-        final int numVehicles = theInput.nextInt();
-        theInput.nextLine();
+        final int numVehicles = input.nextInt();
+        input.nextLine();
 
         for (int lineCount = 0; lineCount < numVehicles; lineCount++) {
-            final char vehicleType = theInput.next().charAt(0);
-            final int vehicleX = theInput.nextInt();
-            final int vehicleY = theInput.nextInt();
-            final char vehicleDirection = theInput.next().charAt(0);
-            theInput.nextLine();
+            final String vehicleType = input.next();
+            final int vehicleX = input.nextInt();
+            final int vehicleY = input.nextInt();
+            final char vehicleDirection = input.next().charAt(0);
+            input.nextLine();
 
             final String className = getClassName(vehicleType);
 
             // Only create vehicle if its type is enabled in config
             if (enabledVehicles.contains(className)) {
                 final Vehicle vehicle = createVehicle(className, vehicleX, vehicleY,
-                        Direction.valueOf(vehicleDirection), theFrame);
+                        Direction.valueOf(vehicleDirection), frame);
                 if (vehicle != null) {
                     vehicles.add(vehicle);
                 }
@@ -177,61 +209,66 @@ public final class FileLoader {
     }
 
     /**
-     * Maps a vehicle type character to its class name.
+     * Maps a vehicle type from the map file to its class name. A single character
+     * is one of the built-in vehicle codes. Anything longer is taken as the class
+     * name itself, so a new vehicle can appear on a map without changing this class.
      *
-     * @param theType the vehicle type character from the map file
-     * @return the class name, or null if unknown type
+     * @param type the vehicle type from the map file, a code such as "T" or a class name
+     * @return the simple class name of the vehicle
      */
-    private static String getClassName(final char theType) {
-        return switch (theType) {
+    private static String getClassName(final String type) {
+        if (type.length() > 1) {
+            return type;
+        }
+        return switch (type.charAt(0)) {
             case 'B' -> "Bicycle";
             case 'A' -> "Atv";
             case 'H' -> "Human";
             case 'T' -> "Truck";
             case 'X' -> "Taxi";
             case 'C' -> "Car";
-            default -> throw new IllegalArgumentException("Unknown vehicle type: " + theType);
+            default -> throw new IllegalArgumentException("Unknown vehicle type: " + type);
         };
     }
 
     /**
      * Creates a vehicle instance using reflection.
      *
-     * @param theClassName the simple class name (e.g., "Truck")
-     * @param theX the x coordinate
-     * @param theY the y coordinate
-     * @param theDirection the initial direction
-     * @param theFrame the frame for error display
+     * @param className the simple class name (e.g., "Truck")
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param direction the initial direction
+     * @param frame the frame for error display
      * @return the created Vehicle, or null if creation failed
      */
-    private static Vehicle createVehicle(final String theClassName,
-                                         final int theX,
-                                         final int theY,
-                                         final Direction theDirection,
-                                         final JFrame theFrame) {
+    private static Vehicle createVehicle(final String className,
+                                         final int x,
+                                         final int y,
+                                         final Direction direction,
+                                         final JFrame frame) {
         Vehicle vehicle = null;
-        final String fullClassName = VEHICLE_PACKAGE + theClassName;
+        final String fullClassName = VEHICLE_PACKAGE + className;
 
         try {
             final Class<?> vehicleClass = Class.forName(fullClassName);
             final Constructor<?> constructor =
                     vehicleClass.getConstructor(int.class, int.class, Direction.class);
-            vehicle = (Vehicle) constructor.newInstance(theX, theY, theDirection);
+            vehicle = (Vehicle) constructor.newInstance(x, y, direction);
 
         } catch (final ClassNotFoundException e) {
-            showVehicleError(theFrame, theClassName,
-                    "Class not found. Check that " + theClassName + ".java exists in "
+            showVehicleError(frame, className,
+                    "Class not found. Check that " + className + ".java exists in "
                             + "the edu.uw.tcss.model package and compiles without errors.\n\n"
                             + "Did you spell the class name correctly in vehicles.txt?");
 
         } catch (final NoSuchMethodException e) {
-            showVehicleError(theFrame, theClassName,
-                    "Constructor not found. " + theClassName + " must have a constructor:\n\n"
-                            + "public " + theClassName + "(int theX, int theY, Direction theDir)");
+            showVehicleError(frame, className,
+                    "Constructor not found. " + className + " must have a constructor:\n\n"
+                            + "public " + className + "(int x, int y, Direction dir)");
 
         } catch (final InstantiationException | IllegalAccessException
                        | InvocationTargetException e) {
-            showVehicleError(theFrame, theClassName,
+            showVehicleError(frame, className,
                     "Could not create instance: " + e.getMessage());
         }
 
@@ -241,18 +278,18 @@ public final class FileLoader {
     /**
      * Displays an error message about a vehicle loading failure.
      *
-     * @param theFrame the frame for the dialog
-     * @param theClassName the class that failed to load
-     * @param theMessage the error details
+     * @param frame the frame for the dialog
+     * @param className the class that failed to load
+     * @param message the error details
      */
-    private static void showVehicleError(final JFrame theFrame,
-                                         final String theClassName,
-                                         final String theMessage) {
+    private static void showVehicleError(final JFrame frame,
+                                         final String className,
+                                         final String message) {
         LOGGER.log(Level.WARNING, "Failed to load vehicle {0}: {1}",
-                new Object[]{theClassName, theMessage});
+                new Object[]{className, message});
 
-        JOptionPane.showMessageDialog(theFrame,
-                "Failed to load vehicle: " + theClassName + "\n\n" + theMessage,
+        JOptionPane.showMessageDialog(frame,
+                "Failed to load vehicle: " + className + "\n\n" + message,
                 "Vehicle Loading Error",
                 JOptionPane.ERROR_MESSAGE);
     }

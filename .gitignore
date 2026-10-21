@@ -1,3 +1,18 @@
+### Gradle ###
+# This project does NOT use Gradle. Tests, Checkstyle, and inspections are all
+# run through the JetBrains MCP server against the plain JAVA_MODULE, so there
+# is no second build system to keep in sync. These rules are kept only so that
+# if a build is ever reintroduced it cannot reach students by accident.
+.gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+build.gradle
+settings.gradle
+gradlew
+gradlew.bat
+gradle/
+
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
@@ -27,3 +42,7 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Claude Code ###
+CLAUDE.md
+.claude/

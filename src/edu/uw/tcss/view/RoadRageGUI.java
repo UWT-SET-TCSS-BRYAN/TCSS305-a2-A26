@@ -39,7 +39,7 @@ import javax.swing.event.ChangeListener;
  * @author Daniel M. Zimmerman
  * @author Alan Fowler (acfowler@u.washington.edu)
  * @author Charles Bryan  (Decomposed into separate classes)
- * @version Autumn 2018
+ * @version Autumn 2026
  */
 
 public final class RoadRageGUI extends JFrame implements ActionListener {
@@ -176,7 +176,7 @@ public final class RoadRageGUI extends JFrame implements ActionListener {
         mySlider.addChangeListener(new ChangeListener() {
             /** Called in response to slider events in this window. */
             @Override
-            public void stateChanged(final ChangeEvent theEvent) {
+            public void stateChanged(final ChangeEvent event) {
                 final int value = mySlider.getValue();
                 if (value > 0) {
                     myDelay = MY_DELAY_NUMERATOR / value;
@@ -245,11 +245,11 @@ public final class RoadRageGUI extends JFrame implements ActionListener {
     /**
      * Returns a new JButton with the specified text.
      * 
-     * @param theText The text.
+     * @param text The text.
      * @return a new JButton.
      */
-    private JButton makeButton(final String theText) {
-        final JButton button = new JButton(theText);
+    private JButton makeButton(final String text) {
+        final JButton button = new JButton(text);
         button.addActionListener(this);
         return button;
     }
@@ -257,17 +257,17 @@ public final class RoadRageGUI extends JFrame implements ActionListener {
     /**
      * A notification method called in response to action events in this window.
      * 
-     * @param theEvent The action event that triggered the call.
+     * @param event The action event that triggered the call.
      */
     @Override
-    public void actionPerformed(final ActionEvent theEvent) {
-        final Object source = theEvent.getSource();
+    public void actionPerformed(final ActionEvent event) {
+        final Object source = event.getSource();
         if (source.equals(myTimer)) {
             // event came from the timer
             myRoadRage.advance();
         } else {
             // event came from one of the buttons
-            final String command = theEvent.getActionCommand().intern();
+            final String command = event.getActionCommand().intern();
             switch (command) {
                 case START_COMMAND -> myTimer.start();
                 case STOP_COMMAND -> myTimer.stop();

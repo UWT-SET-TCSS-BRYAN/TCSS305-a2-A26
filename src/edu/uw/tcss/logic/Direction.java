@@ -13,7 +13,7 @@ import java.util.Random;
  * @author Marty Stepp
  * @author Daniel M. Zimmerman
  * @author Alan Fowler (acfowler@u.washington.edu)
- * @version 1.1
+ * @version Autumn 2026
  */
 
 @SuppressWarnings("PublicMethodNotExposedInInterface")
@@ -54,10 +54,10 @@ public enum Direction {
     /**
      * Constructs a new Terrain with the specified letter.
      * 
-     * @param theLetter The letter.
+     * @param letter The letter.
      */
-    Direction(final char theLetter) {
-        myLetter = theLetter;
+    Direction(final char letter) {
+        myLetter = letter;
     }
 
     // Instance Methods
@@ -65,15 +65,15 @@ public enum Direction {
     /**
      * Returns the Direction represented by the given letter.
      * 
-     * @param theLetter The letter.
+     * @param letter The letter.
      * @return the Direction represented by the given letter, or null if no
      *         Direction is represented by the given letter.
      */
-    public static Direction valueOf(final char theLetter) {
+    public static Direction valueOf(final char letter) {
         Direction result = null;
 
         for (final Direction direction : Direction.values()) {
-            if (direction.letter() == theLetter) {
+            if (direction.letter() == letter) {
                 result = direction;
                 break;
             }

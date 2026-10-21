@@ -43,7 +43,7 @@ import java.util.List;
  * }</pre>
  *
  * @author Charles Bryan
- * @version Winter 2025
+ * @version Autumn 2026
  * @see <a href="https://openjdk.org/jeps/409">JEP 409: Sealed Classes</a>
  * @see <a href="https://openjdk.org/jeps/395">JEP 395: Records</a>
  */

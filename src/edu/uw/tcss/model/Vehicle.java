@@ -15,7 +15,7 @@ import java.util.Map;
  * @author Marty Stepp
  * @author Daniel M. Zimmerman
  * @author Alan Fowler (acfowler@u.washington.edu)
- * @version 1.1
+ * @version Autumn 2026
  */
 public interface Vehicle {
 
@@ -23,21 +23,21 @@ public interface Vehicle {
      * Returns whether this object may move onto the given type of
      * terrain, when the street lights are the given color.
      * 
-     * @param theTerrain The terrain.
-     * @param theLight The light color.
+     * @param terrain The terrain.
+     * @param light The light color.
      * @return whether this object may move onto the given type of
      *         terrain when the street lights are the given color.
      */
-    boolean canPass(Terrain theTerrain, Light theLight);
+    boolean canPass(Terrain terrain, Light light);
 
     /**
      * Returns the direction this object would like to move, based on the given
      * map of the neighboring terrain.
      * 
-     * @param theNeighbors The map of neighboring terrain.
+     * @param neighbors The map of neighboring terrain.
      * @return the direction this object would like to move.
      */
-    Direction chooseDirection(Map<Direction, Terrain> theNeighbors);
+    Direction chooseDirection(Map<Direction, Terrain> neighbors);
 
     /**
      * Called when this Vehicle loses a collision.
@@ -110,23 +110,23 @@ public interface Vehicle {
     /**
      * Sets this object's facing direction to the given value.
      * 
-     * @param theDir The new direction.
+     * @param dir The new direction.
      */
-    void setDirection(Direction theDir);
+    void setDirection(Direction dir);
 
     /**
      * Sets this object's x-coordinate to the given value.
      * 
-     * @param theX The new x-coordinate.
+     * @param x The new x-coordinate.
      */
-    void setX(int theX);
+    void setX(int x);
 
     /**
      * Sets this object's y-coordinate to the given value.
      * 
-     * @param theY The new y-coordinate.
+     * @param y The new y-coordinate.
      */
-    void setY(int theY);
+    void setY(int y);
 
 } // end of interface Vehicle
 

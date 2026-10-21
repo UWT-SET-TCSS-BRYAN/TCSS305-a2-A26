@@ -11,7 +11,7 @@ import java.util.Comparator;
  * Define the behaviors of the Road Rage simulation.
  *
  * @author Charles Bryan
- * @version 1 OCT 2018
+ * @version Autumn 2026
  */
 public interface RoadRageControls {
 
@@ -48,9 +48,9 @@ public interface RoadRageControls {
      * The Comparator determines which vehicle survives a collision:
      * the vehicle that compares as "greater" wins.
      *
-     * @param theComparator the Comparator to use for collision resolution,
+     * @param comparator the Comparator to use for collision resolution,
      *                      or null to use the natural ordering (by mass)
      */
-    void setCollisionComparator(Comparator<Vehicle> theComparator);
+    void setCollisionComparator(Comparator<Vehicle> comparator);
 
 }

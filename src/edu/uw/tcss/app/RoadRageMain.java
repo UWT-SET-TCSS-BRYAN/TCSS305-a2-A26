@@ -13,7 +13,7 @@ import java.awt.EventQueue;
  * @author Marty Stepp
  * @author Daniel M. Zimmerman
  * @author Alan Fowler (acfowler@u.washington.edu)
- * @version 1.1
+ * @version Autumn 2026
  */
 
 public final class RoadRageMain {
@@ -29,9 +29,9 @@ public final class RoadRageMain {
     /**
      * Constructs the main GUI window frame.
      * 
-     * @param theArgs Command line arguments (ignored).
+     * @param args Command line arguments (ignored).
      */
-    public static void main(final String... theArgs) {
+    public static void main(final String... args) {
         EventQueue.invokeLater(RoadRageGUI::new);
     }
 }

@@ -21,7 +21,7 @@ import java.util.Random;
  * Implementation the behaviors of the RoadRage simulation. 
  * 
  * @author Charles Bryan
- * @version 1 OCT 2018
+ * @version Autumn 2026
  */
 public class RoadRage implements PropertyChangeEnabledRoadRageControls {
     
@@ -69,13 +69,13 @@ public class RoadRage implements PropertyChangeEnabledRoadRageControls {
     /**
      * Sets the initial state of a RoadRage Object. 
      * 
-     * @param theGrid the 2D grid of Terrain that defines the map
-     * @param theVehicles the Vehicles on the map
+     * @param grid the 2D grid of Terrain that defines the map
+     * @param vehicles the Vehicles on the map
      */
-    public RoadRage(final Terrain[][] theGrid, final List<Vehicle> theVehicles) {
+    public RoadRage(final Terrain[][] grid, final List<Vehicle> vehicles) {
         super();
-        myVehicles = new ArrayList<>(theVehicles);
-        myGrid = theGrid.clone();
+        myVehicles = new ArrayList<>(vehicles);
+        myGrid = grid.clone();
         myPcs = new PropertyChangeSupport(this);
     }
     
@@ -145,51 +145,51 @@ public class RoadRage implements PropertyChangeEnabledRoadRageControls {
     
  
     @Override
-    public void addPropertyChangeListener(final PropertyChangeListener theListener) {
-        myPcs.addPropertyChangeListener(theListener);
+    public void addPropertyChangeListener(final PropertyChangeListener listener) {
+        myPcs.addPropertyChangeListener(listener);
     }
     
 
     @Override
-    public void removePropertyChangeListener(final PropertyChangeListener theListener) {
-        myPcs.removePropertyChangeListener(theListener);
+    public void removePropertyChangeListener(final PropertyChangeListener listener) {
+        myPcs.removePropertyChangeListener(listener);
     }
     
     @Override
-    public void addPropertyChangeListener(final String thePropertyName,
-                                          final PropertyChangeListener theListener) {
-        myPcs.addPropertyChangeListener(thePropertyName, theListener);
+    public void addPropertyChangeListener(final String propertyName,
+                                          final PropertyChangeListener listener) {
+        myPcs.addPropertyChangeListener(propertyName, listener);
         
     }
 
     @Override
-    public void removePropertyChangeListener(final String thePropertyName,
-                                             final PropertyChangeListener theListener) {
-        myPcs.removePropertyChangeListener(thePropertyName, theListener);
+    public void removePropertyChangeListener(final String propertyName,
+                                             final PropertyChangeListener listener) {
+        myPcs.removePropertyChangeListener(propertyName, listener);
         
     }
     
     /**
      * Tests whether the square at the given x/y position exists on the map.
      * 
-     * @param theX The x position.
-     * @param theY The y position.
+     * @param x The x position.
+     * @param y The y position.
      * @return true if the position exists on the map, false otherwise.
      */
-    private boolean isValidIndex(final int theY, final int theX) {
-        return theY >= 0 && theY < myGrid.length
-            && theX >= 0 && theX < myGrid[theY].length;
+    private boolean isValidIndex(final int y, final int x) {
+        return y >= 0 && y < myGrid.length
+            && x >= 0 && x < myGrid[y].length;
     }
     
     /**
      * Generates a read-only neighbors map for the specified vehicle.
      * 
-     * @param theMover The vehicle.
+     * @param mover The vehicle.
      * @return The neighbors map.
      */
-    private Map<Direction, Terrain> generateNeighbors(final Vehicle theMover) {
-        final int x = theMover.getX();
-        final int y = theMover.getY();
+    private Map<Direction, Terrain> generateNeighbors(final Vehicle mover) {
+        final int x = mover.getX();
+        final int y = mover.getY();
         final Map<Direction, Terrain> result = new HashMap<>();
 
         for (final Direction dir : Direction.values()) {
@@ -203,11 +203,11 @@ public class RoadRage implements PropertyChangeEnabledRoadRageControls {
     /**
      * Sets the paint color appropriately for the current lights.
      *
-     * @param theLight The Light to base the color on.
+     * @param light The Light to base the color on.
      */
-    private void setLightColor(final Light theLight) {
+    private void setLightColor(final Light light) {
         final Light old = myLight;
-        myLight = theLight;
+        myLight = light;
         final var event = new RoadRageEvent.LightChanged(old, myLight, RoadRageEvent.now());
         myPcs.firePropertyChange(event.getPropertyName(), null, event);
     }
@@ -215,11 +215,11 @@ public class RoadRage implements PropertyChangeEnabledRoadRageControls {
     /**
      * Sets the time step for the simulation.
      *
-     * @param theTimestep the time to set.
+     * @param timestep the time to set.
      */
-    private void setTimeStep(final long theTimestep) {
+    private void setTimeStep(final long timestep) {
         final long old = myTimestep;
-        myTimestep = theTimestep;
+        myTimestep = timestep;
         final var event = new RoadRageEvent.TimeChanged(old, myTimestep, RoadRageEvent.now());
         myPcs.firePropertyChange(event.getPropertyName(), null, event);
     }
@@ -262,28 +262,28 @@ public class RoadRage implements PropertyChangeEnabledRoadRageControls {
      * The vehicle that compares as "lesser" becomes disabled.
      * If vehicles are equal, one is randomly selected to become disabled.
      *
-     * @param theV1 the first vehicle
-     * @param theV2 the second vehicle
+     * @param v1 the first vehicle
+     * @param v2 the second vehicle
      */
-    private void resolveCollision(final Vehicle theV1, final Vehicle theV2) {
-        if (theV1.isEnabled() && theV2.isEnabled()) {
-            final int result = myCollisionComparator.compare(theV1, theV2);
+    private void resolveCollision(final Vehicle v1, final Vehicle v2) {
+        if (v1.isEnabled() && v2.isEnabled()) {
+            final int result = myCollisionComparator.compare(v1, v2);
             if (result < 0) {
-                theV1.collide();  // v1 is "lesser" - v1 becomes disabled
+                v1.collide();  // v1 is "lesser" - v1 becomes disabled
             } else if (result > 0) {
-                theV2.collide();  // v2 is "lesser" - v2 becomes disabled
+                v2.collide();  // v2 is "lesser" - v2 becomes disabled
             } else if (RAND.nextBoolean()) {
-                theV1.collide();  // tie - coin flip
+                v1.collide();  // tie - coin flip
             } else {
-                theV2.collide();
+                v2.collide();
             }
         }
     }
 
     @Override
-    public void setCollisionComparator(final Comparator<Vehicle> theComparator) {
+    public void setCollisionComparator(final Comparator<Vehicle> comparator) {
         myCollisionComparator =
-                Objects.requireNonNullElseGet(theComparator,
+                Objects.requireNonNullElseGet(comparator,
                         CollisionComparators::getDefault);
     }
 }

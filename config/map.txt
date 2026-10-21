@@ -1,0 +1,8 @@
+# Road Rage - Map Selection
+#
+# The first line that is not blank and does not start with # names the map
+# to load from the maps/ folder. Restart the application after changing it.
+# If this file is missing, city_map1.txt is used.
+#
+# To try your own map, put it in maps/ and change the line below.
+city_map1.txt

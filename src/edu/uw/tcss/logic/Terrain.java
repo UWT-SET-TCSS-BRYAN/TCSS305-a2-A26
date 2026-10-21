@@ -11,7 +11,7 @@ package edu.uw.tcss.logic;
  * @author Marty Stepp
  * @author Daniel M. Zimmerman
  * @author Alan Fowler (acfowler@u.washington.edu)
- * @version 1.2
+ * @version Autumn 2026
  */
 
 public enum Terrain {
@@ -55,10 +55,10 @@ public enum Terrain {
     /**
      * Constructs a new Terrain with the specified letter.
      * 
-     * @param theLetter The letter.
+     * @param letter The letter.
      */
-    Terrain(final char theLetter) {
-        myLetter = theLetter;
+    Terrain(final char letter) {
+        myLetter = letter;
     }
 
     // Instance Methods
@@ -66,15 +66,15 @@ public enum Terrain {
     /**
      * Returns the Terrain represented by the given letter.
      * 
-     * @param theLetter The letter.
+     * @param letter The letter.
      * @return the Terrain represented by the given letter, or GRASS if no
      *         Terrain is represented by the given letter.
      */
-    public static Terrain valueOf(final char theLetter) {
+    public static Terrain valueOf(final char letter) {
         Terrain result = GRASS;
 
         for (final Terrain terrain : Terrain.values()) {
-            if (terrain.myLetter == theLetter) {
+            if (terrain.myLetter == letter) {
                 result = terrain;
                 break;
             }

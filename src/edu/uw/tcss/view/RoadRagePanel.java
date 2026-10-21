@@ -39,7 +39,7 @@ import javax.swing.event.ChangeListener;
  * @author Daniel M. Zimmerman
  * @author Alan Fowler (acfowler@u.washington.edu)
  * @author Charles Bryan
- * @version 05 OCT 2018
+ * @version Autumn 2026
  * 
  */
 @SuppressWarnings("DataFlowIssue")
@@ -117,17 +117,17 @@ public final class RoadRagePanel extends JPanel implements
 
     /**
      * Construct a new Panel.
-     * @param theWidth width of the 2D grid of Terrain that defines the map
-     * @param theHeight height of the 2D grid of Terrain that defines the map
+     * @param width width of the 2D grid of Terrain that defines the map
+     * @param height height of the 2D grid of Terrain that defines the map
      */
-    public RoadRagePanel(final int theWidth, final int theHeight) {
+    public RoadRagePanel(final int width, final int height) {
         super();
 
         myVehicles = new ArrayList<>();
         myGrid = new Terrain[0][0];
         setLightColor(Light.GREEN);
-        setPreferredSize(new Dimension(theWidth * SQUARE_SIZE,
-                                       theHeight * SQUARE_SIZE));
+        setPreferredSize(new Dimension(width * SQUARE_SIZE,
+                                       height * SQUARE_SIZE));
         setBackground(Color.GREEN);
         setFont(FONT);
     }
@@ -137,13 +137,13 @@ public final class RoadRagePanel extends JPanel implements
     /**
      * Paints this panel on the screen with the specified Graphics object.
      * 
-     * @param theGraphics The Graphics object.
+     * @param graphics The Graphics object.
      */
     @SuppressWarnings("PublicMethodNotExposedInInterface")
     @Override
-    public void paintComponent(final Graphics theGraphics) {
-        super.paintComponent(theGraphics);
-        final Graphics2D g2 = (Graphics2D) theGraphics;
+    public void paintComponent(final Graphics graphics) {
+        super.paintComponent(graphics);
+        final Graphics2D g2 = (Graphics2D) graphics;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                             RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -182,10 +182,10 @@ public final class RoadRagePanel extends JPanel implements
     /**
      * Draws the city map with the specified Graphics2D object.
      * 
-     * @param theGraphics The Graphics2D object.
+     * @param graphics The Graphics2D object.
      */
     @SuppressWarnings("OverlyLongMethod")
-    private void drawMap(final Graphics2D theGraphics) {
+    private void drawMap(final Graphics2D graphics) {
         for (int y = 0; y < myGrid.length; y++) {
             final int topy = y * SQUARE_SIZE;
 
@@ -194,38 +194,38 @@ public final class RoadRagePanel extends JPanel implements
 
                 switch (myGrid[y][x]) {
                     case STREET:
-                        theGraphics.setPaint(Color.LIGHT_GRAY);
-                        theGraphics.fillRect(leftx, topy, SQUARE_SIZE, SQUARE_SIZE);
-                        drawStreetLines(theGraphics, x, y);
+                        graphics.setPaint(Color.LIGHT_GRAY);
+                        graphics.fillRect(leftx, topy, SQUARE_SIZE, SQUARE_SIZE);
+                        drawStreetLines(graphics, x, y);
                         break;
 
                     case WALL:
-                        theGraphics.setPaint(Color.BLACK);
-                        theGraphics.fillRect(leftx, topy, SQUARE_SIZE, SQUARE_SIZE);
+                        graphics.setPaint(Color.BLACK);
+                        graphics.fillRect(leftx, topy, SQUARE_SIZE, SQUARE_SIZE);
                         break;
 
                     case TRAIL:
-                        theGraphics.setPaint(Color.YELLOW.darker().darker());
-                        theGraphics.fillRect(leftx, topy, SQUARE_SIZE, SQUARE_SIZE);
+                        graphics.setPaint(Color.YELLOW.darker().darker());
+                        graphics.fillRect(leftx, topy, SQUARE_SIZE, SQUARE_SIZE);
                         break;
 
                     case LIGHT:
                         // draw a circle of appropriate color
-                        theGraphics.setPaint(Color.LIGHT_GRAY);
-                        theGraphics.fillRect(leftx, topy, SQUARE_SIZE, SQUARE_SIZE);
-                        theGraphics.setPaint(myLightColor);
-                        theGraphics.fillOval(leftx, topy, SQUARE_SIZE, SQUARE_SIZE);
+                        graphics.setPaint(Color.LIGHT_GRAY);
+                        graphics.fillRect(leftx, topy, SQUARE_SIZE, SQUARE_SIZE);
+                        graphics.setPaint(myLightColor);
+                        graphics.fillOval(leftx, topy, SQUARE_SIZE, SQUARE_SIZE);
                         break;
                         
                     case CROSSWALK:
-                        theGraphics.setPaint(Color.LIGHT_GRAY);
-                        theGraphics.fillRect(leftx, topy, SQUARE_SIZE, SQUARE_SIZE);
+                        graphics.setPaint(Color.LIGHT_GRAY);
+                        graphics.fillRect(leftx, topy, SQUARE_SIZE, SQUARE_SIZE);
                         
-                        drawCrossWalkLines(theGraphics, x, y);
+                        drawCrossWalkLines(graphics, x, y);
                         
                         // draw a small circle of appropriate color centered in the square
-                        theGraphics.setPaint(myLightColor);
-                        theGraphics.fillOval(leftx + (int)  (SQUARE_SIZE * CROSSWALK_SCALE),
+                        graphics.setPaint(myLightColor);
+                        graphics.fillOval(leftx + (int)  (SQUARE_SIZE * CROSSWALK_SCALE),
                                              topy  + (int) (SQUARE_SIZE * CROSSWALK_SCALE),
                                              SQUARE_SIZE / 2, SQUARE_SIZE / 2);
                         break;
@@ -233,7 +233,7 @@ public final class RoadRagePanel extends JPanel implements
                     default:
                 }
 
-                drawDebugInfo(theGraphics, x, y);
+                drawDebugInfo(graphics, x, y);
             }
         }
     }
@@ -241,43 +241,43 @@ public final class RoadRagePanel extends JPanel implements
     /**
      * Draws debugging information, if necessary.
      * 
-     * @param theGraphics The Graphics context to use for drawing.
-     * @param theX The x-coordinate of the street.
-     * @param theY The y-coordinate of the street.
+     * @param graphics The Graphics context to use for drawing.
+     * @param x The x-coordinate of the street.
+     * @param y The y-coordinate of the street.
      */
-    private void drawDebugInfo(final Graphics2D theGraphics, final int theX, final int theY) {
+    private void drawDebugInfo(final Graphics2D graphics, final int x, final int y) {
 
         if (myDebugFlag) {
             // draw numbers for the row and column
-            final Paint oldPaint = theGraphics.getPaint();
-            theGraphics.setPaint(Color.BLACK);
+            final Paint oldPaint = graphics.getPaint();
+            graphics.setPaint(Color.BLACK);
 
-            final int leftx = theX * SQUARE_SIZE;
-            final int topy = theY * SQUARE_SIZE;
-            theGraphics.drawString("(" + theX + ", " + theY + ")", leftx, topy + DEBUG_OFFSET);
-            theGraphics.setPaint(oldPaint);
+            final int leftx = x * SQUARE_SIZE;
+            final int topy = y * SQUARE_SIZE;
+            graphics.drawString("(" + x + ", " + y + ")", leftx, topy + DEBUG_OFFSET);
+            graphics.setPaint(oldPaint);
         }
     }
     
     /**
      * Draws the debug information for a single Vehicle.
      * 
-     * @param theGraphics The graphic context.
-     * @param theVehicle The Vehicle being drawn.
+     * @param graphics The graphic context.
+     * @param vehicle The Vehicle being drawn.
      */
     @SuppressWarnings("OverlyLongMethod")
-    private void drawDebugInfo(final Graphics2D theGraphics, final Vehicle theVehicle) {
-        int x = theVehicle.getX() * SQUARE_SIZE;
-        int y = theVehicle.getY() * SQUARE_SIZE;
+    private void drawDebugInfo(final Graphics2D graphics, final Vehicle vehicle) {
+        int x = vehicle.getX() * SQUARE_SIZE;
+        int y = vehicle.getY() * SQUARE_SIZE;
 
         // draw numbers on each vehicle
-        theGraphics.setColor(Color.WHITE);
-        theGraphics.drawString(theVehicle.toString(), x, y + SQUARE_SIZE - 1);
-        theGraphics.setColor(Color.BLACK);
-        theGraphics.drawString(theVehicle.toString(), x + 1, y + SQUARE_SIZE);
+        graphics.setColor(Color.WHITE);
+        graphics.drawString(vehicle.toString(), x, y + SQUARE_SIZE - 1);
+        graphics.setColor(Color.BLACK);
+        graphics.drawString(vehicle.toString(), x + 1, y + SQUARE_SIZE);
 
         // draw arrow on vehicle for its direction
-        final Direction dir = theVehicle.getDirection();
+        final Direction dir = vehicle.getDirection();
         int dx = (SQUARE_SIZE - MARKER_SIZE) / 2;
         int dy = dx;
 
@@ -304,17 +304,17 @@ public final class RoadRagePanel extends JPanel implements
         x += dx;
         y += dy;
 
-        theGraphics.setColor(Color.YELLOW);
-        theGraphics.fillOval(x, y, MARKER_SIZE, MARKER_SIZE);
+        graphics.setColor(Color.YELLOW);
+        graphics.fillOval(x, y, MARKER_SIZE, MARKER_SIZE);
     }
 
     /**
      * Sets the paint color appropriately for the current lights.
      * 
-     * @param theLight The Light to base the color on.
+     * @param light The Light to base the color on.
      */
-    private void setLightColor(final Light theLight) {
-        switch (theLight) {
+    private void setLightColor(final Light light) {
+        switch (light) {
             case GREEN:
                 myLightColor = Color.GREEN.darker();
                 break;
@@ -334,96 +334,96 @@ public final class RoadRagePanel extends JPanel implements
     /**
      * Draws dotted lines on cross walks.
      * 
-     * @param theGraphics The Graphics context to use for drawing.
-     * @param theX The x-coordinate of the cross walk.
-     * @param theY The y-coordinate of the cross walk.
+     * @param graphics The Graphics context to use for drawing.
+     * @param x The x-coordinate of the cross walk.
+     * @param y The y-coordinate of the cross walk.
      */
-    private void drawCrossWalkLines(final Graphics2D theGraphics,
-                                 final int theX, final int theY) {
+    private void drawCrossWalkLines(final Graphics2D graphics,
+                                 final int x, final int y) {
         
-        final Paint oldPaint = theGraphics.getPaint();
-        theGraphics.setPaint(Color.WHITE);
+        final Paint oldPaint = graphics.getPaint();
+        graphics.setPaint(Color.WHITE);
 
-        final int leftx = theX * SQUARE_SIZE;
-        final int topy = theY * SQUARE_SIZE;
+        final int leftx = x * SQUARE_SIZE;
+        final int topy = y * SQUARE_SIZE;
 
         final int rightx = leftx + SQUARE_SIZE;
         final int bottomy = topy + SQUARE_SIZE;
 
-        if (isValidIndex(theY - 1, theX) && myGrid[theY - 1][theX] == Terrain.GRASS) {
+        if (isValidIndex(y - 1, x) && myGrid[y - 1][x] == Terrain.GRASS) {
             // GRASS is above. Let's assume GRASS is also below.
             // DRAW lines on left and right of light
-            theGraphics.drawLine(leftx  + (int) (SQUARE_SIZE * CROSSWALK_SCALE), topy,
+            graphics.drawLine(leftx  + (int) (SQUARE_SIZE * CROSSWALK_SCALE), topy,
                                  leftx  + (int) (SQUARE_SIZE * CROSSWALK_SCALE), bottomy);
-            theGraphics.drawLine(rightx - (int) (SQUARE_SIZE * CROSSWALK_SCALE), topy,
+            graphics.drawLine(rightx - (int) (SQUARE_SIZE * CROSSWALK_SCALE), topy,
                                  rightx - (int) (SQUARE_SIZE * CROSSWALK_SCALE), bottomy);
         }
         
 
-        if (isValidIndex(theY, theX - 1) && myGrid[theY][theX - 1] == Terrain.GRASS) {
+        if (isValidIndex(y, x - 1) && myGrid[y][x - 1] == Terrain.GRASS) {
             // GRASS is left. Let's assume GRASS is also right.
             // DRAW lines above and below light
-            theGraphics.drawLine(leftx, topy + (int) (SQUARE_SIZE * CROSSWALK_SCALE),
+            graphics.drawLine(leftx, topy + (int) (SQUARE_SIZE * CROSSWALK_SCALE),
                                  rightx, topy + (int) (SQUARE_SIZE * CROSSWALK_SCALE));
-            theGraphics.drawLine(leftx, bottomy - (int) (SQUARE_SIZE * CROSSWALK_SCALE),
+            graphics.drawLine(leftx, bottomy - (int) (SQUARE_SIZE * CROSSWALK_SCALE),
                                  rightx, bottomy - (int) (SQUARE_SIZE * CROSSWALK_SCALE));
         }
 
-        theGraphics.setPaint(oldPaint);
+        graphics.setPaint(oldPaint);
     }
     
     /**
      * Draws dotted lines on streets.
      * 
-     * @param theGraphics The Graphics context to use for drawing.
-     * @param theX The x-coordinate of the street.
-     * @param theY The y-coordinate of the street.
+     * @param graphics The Graphics context to use for drawing.
+     * @param x The x-coordinate of the street.
+     * @param y The y-coordinate of the street.
      */
-    private void drawStreetLines(final Graphics2D theGraphics,
-                                 final int theX, final int theY) {
+    private void drawStreetLines(final Graphics2D graphics,
+                                 final int x, final int y) {
         
-        final Paint oldPaint = theGraphics.getPaint();
-        theGraphics.setPaint(Color.YELLOW);
+        final Paint oldPaint = graphics.getPaint();
+        graphics.setPaint(Color.YELLOW);
 
-        final int leftx = theX * SQUARE_SIZE;
-        final int topy = theY * SQUARE_SIZE;
+        final int leftx = x * SQUARE_SIZE;
+        final int topy = y * SQUARE_SIZE;
         final int centerx = leftx + SQUARE_SIZE / 2;
         final int centery = topy + SQUARE_SIZE / 2;
         final int rightx = leftx + SQUARE_SIZE;
         final int bottomy = topy + SQUARE_SIZE;
 
-        if (isValidIndex(theY - 1, theX) && myGrid[theY - 1][theX] == Terrain.STREET) {
-            theGraphics.drawLine(centerx, centery, centerx, topy); // above
+        if (isValidIndex(y - 1, x) && myGrid[y - 1][x] == Terrain.STREET) {
+            graphics.drawLine(centerx, centery, centerx, topy); // above
         }
-        if (isValidIndex(theY + 1, theX) && myGrid[theY + 1][theX] == Terrain.STREET) {
-            theGraphics.drawLine(centerx, centery, centerx, bottomy); // below
+        if (isValidIndex(y + 1, x) && myGrid[y + 1][x] == Terrain.STREET) {
+            graphics.drawLine(centerx, centery, centerx, bottomy); // below
         }
-        if (isValidIndex(theY, theX - 1) && myGrid[theY][theX - 1] == Terrain.STREET) {
-            theGraphics.drawLine(centerx, centery, leftx, centery); // left
+        if (isValidIndex(y, x - 1) && myGrid[y][x - 1] == Terrain.STREET) {
+            graphics.drawLine(centerx, centery, leftx, centery); // left
         }
-        if (isValidIndex(theY, theX + 1) && myGrid[theY][theX + 1] == Terrain.STREET) {
-            theGraphics.drawLine(centerx, centery, rightx, centery); // right
+        if (isValidIndex(y, x + 1) && myGrid[y][x + 1] == Terrain.STREET) {
+            graphics.drawLine(centerx, centery, rightx, centery); // right
         }
 
-        theGraphics.setPaint(oldPaint);
+        graphics.setPaint(oldPaint);
     }
     
     /**
      * Tests whether the square at the given x/y position exists on the map.
      * 
-     * @param theX The x position.
-     * @param theY The y position.
+     * @param x The x position.
+     * @param y The y position.
      * @return true if the position exists on the map, false otherwise.
      */
-    private boolean isValidIndex(final int theY, final int theX) {
-        return theY >= 0 && theY < myGrid.length
-            && theX >= 0 && theX < myGrid[theY].length;
+    private boolean isValidIndex(final int y, final int x) {
+        return y >= 0 && y < myGrid.length
+            && x >= 0 && x < myGrid[y].length;
     }
 
     @Override
-    public void propertyChange(final PropertyChangeEvent theEvent) {
-        if (theEvent.getNewValue() instanceof final RoadRageEvent event) {
-            switch (event) {
+    public void propertyChange(final PropertyChangeEvent event) {
+        if (event.getNewValue() instanceof final RoadRageEvent roadRageEvent) {
+            switch (roadRageEvent) {
                 case final RoadRageEvent.GridChanged e -> myGrid = e.grid();
                 case final RoadRageEvent.LightChanged e -> setLightColor(e.newLight());
                 case final RoadRageEvent.VehiclesChanged e -> myVehicles = new ArrayList<>(e.vehicles());
@@ -434,8 +434,8 @@ public final class RoadRagePanel extends JPanel implements
     }
 
     @Override
-    public void stateChanged(final ChangeEvent theEvent) {
-        myDebugFlag = ((JToggleButton) theEvent.getSource()).isSelected();
+    public void stateChanged(final ChangeEvent event) {
+        myDebugFlag = ((JToggleButton) event.getSource()).isSelected();
         repaint();
     }
     

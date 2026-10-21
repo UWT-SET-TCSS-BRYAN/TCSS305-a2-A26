@@ -10,7 +10,7 @@ package edu.uw.tcss.logic;
  * @author Marty Stepp
  * @author Daniel M. Zimmerman
  * @author Alan Fowler (acfowler@u.washington.edu)
- * @version 1.1
+ * @version Autumn 2026
  */
 
 @SuppressWarnings("PublicMethodNotExposedInInterface")

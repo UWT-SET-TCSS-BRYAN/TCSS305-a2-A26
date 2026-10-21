@@ -15,7 +15,7 @@ import java.util.Random;
  * algorithm for determining collision winners.
  *
  * @author Charles Bryan
- * @version Winter 2026
+ * @version Autumn 2026
  */
 public final class CollisionComparators {
 
