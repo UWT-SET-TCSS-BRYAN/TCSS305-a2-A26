@@ -93,6 +93,12 @@ public final class FileLoader {
                     "Could not read city map file " + cityFile + ERROR_MESSAGE_SEPARATOR + ioe.getMessage(),
                     "I/O Error",
                     JOptionPane.ERROR_MESSAGE);
+        } catch (final IllegalArgumentException iae) {
+            JOptionPane.showMessageDialog(frame,
+                    "The city map file " + cityFile + " is not valid" + ERROR_MESSAGE_SEPARATOR
+                            + iae.getMessage(),
+                    "Map Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
         return result;
     }
@@ -171,7 +177,31 @@ public final class FileLoader {
                 grid[row][column] = Terrain.valueOf(line.charAt(column));
             }
         }
+        checkWallBorder(grid);
         return grid;
+    }
+
+    /**
+     * Checks that every square on the edge of the map is a wall. A walled edge means
+     * every vehicle always has terrain on all four of its sides.
+     *
+     * @param grid the grid of terrains read from the map file.
+     * @throws IllegalArgumentException if any edge square is not a wall.
+     */
+    private static void checkWallBorder(final Terrain[][] grid) {
+        final int lastRow = grid.length - 1;
+        for (int row = 0; row <= lastRow; row++) {
+            final int lastColumn = grid[row].length - 1;
+            for (int column = 0; column <= lastColumn; column++) {
+                final boolean onEdge = row == 0 || row == lastRow
+                        || column == 0 || column == lastColumn;
+                if (onEdge && grid[row][column] != Terrain.WALL) {
+                    throw new IllegalArgumentException(
+                            "The map must be surrounded by walls (X). Row " + row
+                                    + ", column " + column + " is " + grid[row][column] + ".");
+                }
+            }
+        }
     }
 
     /**

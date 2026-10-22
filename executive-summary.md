@@ -27,8 +27,10 @@ difficulties you had with tools, Java libraries, etc.]
 
 ## Assignment 2a: Extracting AbstractVehicle
 [What did Truck and Car have in common, and what did you move into
-AbstractVehicle? Did the provided tests stay green through the refactor?
-If a test went red along the way, say what broke and how you found it.]
+AbstractVehicle? Which provided tests passed before the refactor, and did
+the same ones pass after it? If a test changed along the way, say what
+broke and how you found it. If any test is still failing, name it and
+say what you know about why.]
 
 ## Assignment 2b: AI Disclosure
 [Which AI tools did you use, and for what? For each vehicle the agent
