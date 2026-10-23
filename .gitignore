@@ -44,5 +44,6 @@ bin/
 .DS_Store
 
 ### Claude Code ###
-CLAUDE.md
-.claude/
+# CLAUDE.md is committed: A2a Requirement 4 asks for it.
+CLAUDE.local.md
+.claude/settings.local.json
